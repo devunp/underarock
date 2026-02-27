@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>order desk | under-a-rock.org</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <h1>order desk</h1>
+    <ul class="utility-links">
+      <li><a href="index.html">home</a></li>
+      <li><a href="shirts.html">shirts</a></li>
+      <li><a href="zines.html">zines</a></li>
+      <li><a href="rocks.html">holds</a></li>
+    </ul>
+
+    <section class="panel scanline">
+      <h2>request an item</h2>
+      <p>fill this form and press "make email draft". your mail app opens with a ready-to-send order message.</p>
+
+      <form id="order-form">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="order-item">item code</label>
+            <select id="order-item" name="item" required>
+              <option value="">select one</option>
+              <option value="ZN-001">ZN-001 zine</option>
+              <option value="ZN-002">ZN-002 zine</option>
+              <option value="ZN-BUNDLE">ZN-BUNDLE</option>
+              <option value="SH-001">SH-001 shirt</option>
+              <option value="SH-002">SH-002 shirt</option>
+              <option value="SH-003">SH-003 shirt</option>
+              <option value="RH-001">RH-001 holds</option>
+              <option value="RH-002">RH-002 holds</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="order-size">size</label>
+            <select id="order-size" name="size" required>
+              <option value="n/a">n/a</option>
+              <option value="s">s</option>
+              <option value="m">m</option>
+              <option value="l">l</option>
+              <option value="xl">xl</option>
+              <option value="2xl">2xl</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="order-qty">quantity</label>
+            <input id="order-qty" name="qty" type="number" min="1" max="20" value="1" required />
+          </div>
+
+          <div class="form-field">
+            <label for="order-name">your name</label>
+            <input id="order-name" name="name" type="text" required />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="order-email">your email</label>
+          <input id="order-email" name="email" type="email" required />
+        </div>
+
+        <div class="form-field">
+          <label for="order-notes">notes</label>
+          <textarea id="order-notes" name="notes" rows="5" placeholder="color preferences, shipping country, fit notes, etc"></textarea>
+        </div>
+
+        <button type="submit">make email draft</button>
+      </form>
+
+      <p id="order-status" class="small-note"></p>
+      <p class="small-note">if your mail app does not open, email <a href="mailto:orders@under-a-rock.org">orders@under-a-rock.org</a>.</p>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>under-a-rock.org</title>
-  <meta name="description" content="Rock climbing shirts, zines, climbing holds, blogs, and photos." />
+  <meta name="description" content="Rock climbing shirts, zines, climbing holds, blogs, and photo pages." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="page">
-    <marquee behavior="scroll" direction="left">WELCOME TO UNDER-A-ROCK.ORG :: ROCK CLIMBING ZINES + SHIRTS + HOLDS</marquee>
+    <marquee behavior="alternate" direction="left">UNDER-A-ROCK.ORG :: CLIMB // PRINT // SHOUT // REPEAT</marquee>
     <h1>under-a-rock.org</h1>
 
     <ul class="nav-links">
@@ -22,53 +22,88 @@
       <li><a href="buddies.html">the buddies</a></li>
     </ul>
 
-    <p><span class="blink">UNDER CONSTRUCTION</span> but open for visitors.</p>
-    <p>under a rock is a climbing world by two friends: shirts, zines, climbing holds, blogs, and photo drops.</p>
+    <ul class="utility-links">
+      <li><a href="order.html">order desk</a></li>
+      <li><a href="blogs.html#templates">post templates</a></li>
+      <li><a href="about.html">about</a></li>
+      <li><a href="contact.html">contact</a></li>
+    </ul>
 
-    <table class="layout-table">
-      <tr>
-        <th>section</th>
-        <th>what lives there</th>
-      </tr>
-      <tr>
-        <td><a href="zines.html">the zines</a></td>
-        <td>route stories, photo essays, and printable mini issues.</td>
-      </tr>
-      <tr>
-        <td><a href="shirts.html">the shirts</a></td>
-        <td>tees, sizing info, and future release dates.</td>
-      </tr>
-      <tr>
-        <td><a href="funnies.html">the funnies</a></td>
-        <td>cartoons and climbing jokes from the crag.</td>
-      </tr>
-      <tr>
-        <td><a href="blogs.html">the blogs</a></td>
-        <td>updates, trip logs, and gear thoughts.</td>
-      </tr>
-      <tr>
-        <td><a href="rocks.html">the rocks</a></td>
-        <td>climbing holds + featured photo pages.</td>
-      </tr>
-      <tr>
-        <td><a href="buddies.html">the buddies</a></td>
-        <td>friend links, collabs, and partner shoutouts.</td>
-      </tr>
-    </table>
+    <img class="rule" src="assets/divider-zigzag.svg" alt="zigzag divider" />
 
-    <p>
+    <p><span class="blink">UNDER CONSTRUCTION</span> but open for sends.</p>
+    <p class="highlight">two friends, one climbing obsession, and a lot of print ink.</p>
+
+    <div class="grid-2">
+      <section class="panel scanline">
+        <h2>site map</h2>
+        <table class="layout-table">
+          <tr>
+            <th>section</th>
+            <th>what is there</th>
+          </tr>
+          <tr>
+            <td><a href="zines.html">the zines</a></td>
+            <td>mini print drops, crag stories, illustrated route notes.</td>
+          </tr>
+          <tr>
+            <td><a href="shirts.html">the shirts</a></td>
+            <td>small-batch tees and release table.</td>
+          </tr>
+          <tr>
+            <td><a href="funnies.html">the funnies</a></td>
+            <td>comics, route-name chaos, weird climbing jokes.</td>
+          </tr>
+          <tr>
+            <td><a href="blogs.html">the blogs</a></td>
+            <td>trip logs, training notes, post templates.</td>
+          </tr>
+          <tr>
+            <td><a href="rocks.html">the rocks</a></td>
+            <td>climbing holds and photo pages.</td>
+          </tr>
+          <tr>
+            <td><a href="buddies.html">the buddies</a></td>
+            <td>friends, collabs, and link roll.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="panel">
+        <h2>newswire</h2>
+        <ul class="section-list">
+          <li>new: merch order desk now live via email draft workflow.</li>
+          <li>new: reusable blog and photo templates published.</li>
+          <li>next: first shirt and zine drop details.</li>
+        </ul>
+
+        <h3>88x31 button strip</h3>
+        <div class="button88-row">
+          <a class="button88" href="index.html"><img src="assets/button-underarock.svg" alt="Under a Rock button" /></a>
+          <a class="button88" href="blogs.html"><img src="assets/button-beta.svg" alt="Send beta button" /></a>
+          <a class="button88" href="rocks.html"><img src="assets/button-holds.svg" alt="Garage holds button" /></a>
+        </div>
+
+        <div class="terminal">[ UNDER A ROCK TERMINAL ]
+status: online
+mood: chalked up
+resolution: 800x600 forever</div>
+      </section>
+    </div>
+
+    <div class="web-ring">
+      <strong>fake web ring:</strong>
+      <a href="buddies.html">&lt;&lt; previous climber</a>
+      | <a href="index.html">random crag site</a>
+      | <a href="buddies.html">next climber &gt;&gt;</a>
+    </div>
+
+    <p class="badge-row">
       <span class="badge">webmaster: devunp</span>
       <span class="badge">visitor #<span id="visitor-count">1</span></span>
       <span class="badge">last updated: <span id="last-updated">today</span></span>
+      <span class="badge">best viewed with old-school energy</span>
     </p>
-
-    <pre>
-[========= UNDER A ROCK TERMINAL =========]
-| CLIMB HARD | DRAW WEIRD STUFF | PRINT ZINES |
-[==========================================]
-    </pre>
-
-    <p class="small-note">best viewed with a strong forearm pump and old-school web nostalgia.</p>
   </main>
   <script src="script.js"></script>
 </body>
