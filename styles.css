@@ -1,32 +1,42 @@
 body {
   margin: 0;
-  padding: 16px;
-  background: #000000;
-  color: #ffffff;
+  background: #ffffff;
+  color: #000000;
   font-family: "Times New Roman", Times, serif;
-  line-height: 1.4;
+  line-height: 1.35;
+}
+
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 14px 12px 24px;
 }
 
 h1,
-h2 {
-  margin: 0 0 12px;
-  font-weight: bold;
+h2,
+h3 {
+  margin: 0 0 10px;
 }
 
 p {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 }
 
 a {
-  color: #4da3ff;
+  color: #0000ee;
 }
 
 a:visited {
-  color: #b28dff;
+  color: #551a8b;
+}
+
+marquee {
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .nav-links {
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   padding: 0;
   list-style: none;
 }
@@ -36,16 +46,49 @@ a:visited {
   margin-right: 10px;
 }
 
-.section-list {
-  margin-top: 18px;
+.layout-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #000000;
+  margin-bottom: 14px;
 }
 
-.section-list li {
-  margin-bottom: 8px;
+.layout-table td,
+.layout-table th {
+  border: 1px solid #000000;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.badge {
+  display: inline-block;
+  border: 1px solid #000000;
+  padding: 2px 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.section-list {
+  margin: 0 0 14px;
+}
+
+.blink {
+  animation: blink 1s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  50% {
+    visibility: hidden;
+  }
+}
+
+pre {
+  margin: 10px 0 14px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
 }
 
 .small-note {
-  margin-top: 24px;
-  color: #cccccc;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
