@@ -1,0 +1,151 @@
+:root {
+  --bg: #f5f6f0;
+  --surface: #fffefa;
+  --text: #111111;
+  --muted: #4b5563;
+  --border: #d7d8ce;
+  --accent: #0f766e;
+  --accent-2: #d97706;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, #fff5d8 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, #d9f3ef 0%, transparent 35%),
+    var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.bg-shape {
+  position: fixed;
+  z-index: -1;
+  border-radius: 999px;
+  filter: blur(8px);
+  opacity: 0.4;
+}
+
+.bg-shape-1 {
+  width: 220px;
+  height: 220px;
+  background: #fde68a;
+  top: -70px;
+  left: -70px;
+}
+
+.bg-shape-2 {
+  width: 280px;
+  height: 280px;
+  background: #99f6e4;
+  right: -120px;
+  bottom: -100px;
+}
+
+.site-header {
+  width: min(1000px, 92%);
+  margin: 1.5rem auto 0;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 90%, white 10%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  gap: 0.8rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+}
+
+nav a[aria-current="page"] {
+  color: var(--text);
+  background: #eceee4;
+}
+
+.container {
+  width: min(1000px, 92%);
+  margin: 2rem auto;
+  flex: 1;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.hero h1,
+.card h1 {
+  margin-top: 0.3rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.2;
+}
+
+.eyebrow {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+
+.button {
+  display: inline-block;
+  margin-top: 0.7rem;
+  text-decoration: none;
+  font-weight: 700;
+  background: var(--accent-2);
+  color: #1f1300;
+  padding: 0.6rem 0.95rem;
+  border-radius: 10px;
+}
+
+.site-footer {
+  width: min(1000px, 92%);
+  margin: 0 auto 1.5rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .card {
+    padding: 1.2rem;
+  }
+}
