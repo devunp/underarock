@@ -4,13 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>under-a-rock.org</title>
-  <meta name="description" content="Rock climbing shirts, zines, climbing holds, blogs, and photo pages." />
+  <meta name="description" content="shirts. zines. climbing holds. community. if you know, you know." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="site-layout">
+
+  <!-- PHOTO RAIL LEFT -->
+  <aside class="photo-rail photo-rail-left" aria-hidden="true">
+    <div class="photo-rail-track"></div>
+  </aside>
+
+  <!-- AD RAIL LEFT -->
+  <aside class="ad-rail" aria-label="advertisements">
+    <div class="ad-slot" style="height: 480px;">
+      <span class="ad-slot-label">advertisement</span>
+      <div class="ad-slot-body">
+        <span>120×240</span>
+        <span>[ your image here ]</span>
+      </div>
+    </div>
+    <div class="ad-slot" style="height: 650px;">
+      <span class="ad-slot-label">advertisement</span>
+      <div class="ad-slot-body">
+        <span>120×340</span>
+        <span>[ your image here ]</span>
+      </div>
+    </div>
+  </aside>
+
   <main class="page">
-    <marquee behavior="alternate" direction="left">UNDER-A-ROCK.ORG :: HAVE YOU BEEN LIVING UNDER A ROCK? </marquee>
-    <h1>under-a-rock.org</h1>
+
+    <marquee behavior="scroll" direction="left" scrollamount="8">HAVE YOU BEEN LIVING UNDER A ROCK?</marquee>
+
     <div class="logo-3d-wrap" aria-hidden="true">
       <div class="logo-3d">
         <span class="logo-face logo-face-front">underarock</span>
@@ -25,90 +51,189 @@
       <li><a href="blogs.html">the blogs</a></li>
       <li><a href="rocks.html">the holds</a></li>
       <li><a href="buddies.html">the buddies</a></li>
-    </ul>
-
-    <ul class="utility-links">
+      <li><a href="gallery.html">the gallery</a></li>
       <li><a href="order.html">order desk</a></li>
-      <li><a href="blogs.html#templates">post templates</a></li>
       <li><a href="about.html">about</a></li>
       <li><a href="contact.html">contact</a></li>
     </ul>
 
-    <img class="rule" src="assets/divider-zigzag.svg" alt="zigzag divider" />
+    <img class="rule" src="assets/divider-zigzag.svg" alt="" />
 
-    <p><span class="blink">UNDER CONSTRUCTION</span> but open for visitors</p>
-    <p class="highlight">kyler and devun are under a rock. Are you?</p>
-
+    <!-- INTRO + FRESH BETA -->
     <div class="grid-2">
+      <section class="panel">
+        <h2>have you been living under a rock?</h2>
+        <p>underarock is a project by kyler and devun. we make shirts, zines, and holds. we also write about climbing because nobody asked us to.</p>
+        <p>things are added when they exist. things are removed when they don't. <span class="blink">UNDER CONSTRUCTION</span> but accepting visitors.</p>
+        <p class="highlight">the primordial zine is done. &mdash; <a href="order.html?item=ZN-001 Zine">order one &gt;&gt;</a></p>
+        <div class="photo-box">[ photograph: kyler with mud hands, graveyard ]</div>
+      </section>
+
       <section class="panel scanline">
-        <h2>site map</h2>
-        <table class="layout-table">
-          <tr>
-            <th>section</th>
-            <th>what is there</th>
-          </tr>
-          <tr>
-            <td><a href="zines.html">the zines</a></td>
-            <td>photos and stories of rocks, buddies, and buddies under rocks.</td>
-          </tr>
-          <tr>
-            <td><a href="shirts.html">the shirts</a></td>
-            <td>we have both kinds, bootlegs AND originals.</td>
-          </tr>
-          <tr>
-            <td><a href="funnies.html">the funnies</a></td>
-            <td>comics and such.</td>
-          </tr>
-          <tr>
-            <td><a href="blogs.html">the blogs</a></td>
-            <td>random junk. thoughts and opeds.</td>
-          </tr>
-          <tr>
-            <td><a href="rocks.html">the holds</a></td>
-            <td>one stop shop for sweet grips.</td>
-          </tr>
-          <tr>
-            <td><a href="buddies.html">the buddies</a></td>
-            <td>good guys and bad guys.</td>
-          </tr>
-        </table>
+        <h2>fresh beta</h2>
+        <ul class="section-list">
+          <li><strong>new &mdash;</strong> <a href="zines.html">the primordial zine</a> is done and shipping. <a href="order.html?item=ZINE-001">order one &gt;&gt;</a></li>
+          <li><strong>soon &mdash;</strong> zine #2 "zinekansas" is deep in production.</li>
+          <li><strong>soon &mdash;</strong> punter bootleg shirts. very limited. very bad.</li>
+          <li><strong>brewing &mdash;</strong> holy boulders holds. shadow and durden crimpers.</li>
+          <li><strong>always &mdash;</strong> the blogs are accumulating.</li>
+        </ul>
+
+        <h3>latest post</h3>
+        <p class="small-note">
+          <a href="blog-bishop-weekend-001.html">one horse gap siege</a><br />
+          <em>"saw a horse lorem ipsum."</em>
+        </p>
+
+        <p class="badge-row">
+          <span class="badge"><span class="blink">!!</span> new zine available</span>
+          <span class="badge">orders open</span>
+        </p>
+      </section>
+    </div>
+
+    <!-- SHOP GRID -->
+    <img class="rule" src="assets/divider-zigzag.svg" alt="" />
+
+    <h2>the stuff</h2>
+    <div class="grid-3">
+      <section class="panel">
+        <h3><a href="zines.html">the zines</a></h3>
+        <img src="assets/zine.png" alt="the primordial zine" style="width:100%;display:block;margin-bottom:12px;border:1px solid var(--line);" />
+        <p>photos and stories of rocks, buddies, and buddies under rocks. printed. stapled. mailed to your door.</p>
+        <p><a href="zines.html">&gt;&gt; browse zines</a></p>
       </section>
 
       <section class="panel">
-        <h2>news</h2>
-        <ul class="section-list">
-          <li>new: the primordial zine is done. </li>
-          <li>next: zine #2 "zinekansas" is incoming.</li>
-          <li>next: punter bootleg shirts incoming.</li>
-          <li>next: holy boulders holds are brewing.</li>
-        </ul>
+        <h3><a href="shirts.html">the shirts</a></h3>
+        <img src="assets/shirt.png" alt="underarock shirt" style="width:100%;display:block;margin-bottom:12px;border:1px solid var(--line);" />
+        <p>tees. bootlegs and originals.</p>
+        <p><a href="shirts.html">&gt;&gt; browse shirts</a></p>
+      </section>
 
-        <h3>Button Test</h3>
-        <div class="button88-row">
-          <a class="button88" href="index.html"><img src="assets/button-underarock.svg" alt="Under a Rock button" /></a>
-          <a class="button88" href="blogs.html"><img src="assets/button-beta.svg" alt="Send beta button" /></a>
-          <a class="button88" href="rocks.html"><img src="assets/button-holds.svg" alt="Garage holds button" /></a>
-        </div>
-
-        <div class="terminal">[ UNDER A ROCK TERMINAL ]
-</div>
+      <section class="panel">
+        <h3><a href="rocks.html">the holds</a></h3>
+        <img src="assets/hold.jpeg" alt="underarock holds" style="width:100%;display:block;margin-bottom:12px;border:1px solid var(--line);" />
+        <p>replica galore. bringing so ill to home soil</p>
+        <p><a href="rocks.html">&gt;&gt; browse holds</a></p>
       </section>
     </div>
 
-    <div class="web-ring">
-      <strong>fake web ring:</strong>
-      <a href="buddies.html">&lt;&lt; previous climber</a>
-      | <a href="index.html">random crag site</a>
-      | <a href="buddies.html">next climber &gt;&gt;</a>
+    <!-- BLOG PREVIEW + SIDEBAR -->
+    <img class="rule" src="assets/divider-zigzag.svg" alt="" />
+
+    <div class="grid-2">
+      <section class="panel">
+        <h2>from the blogs</h2>
+        <p>
+          <strong><a href="blog-bishop-weekend-001.html">one horse weekend 001</a></strong>
+        </p>
+        <p class="small-note">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"</p>
+        <div class="photo-box" style="min-height: 110px;">[ trip photo ]</div>
+        <p><a href="blogs.html">&gt;&gt; all posts</a> &nbsp; <a href="funnies.html">&gt;&gt; the funnies</a></p>
+      </section>
+
+      <section>
+        <div class="panel" style="margin-bottom: 12px;">
+          <h2>project list</h2>
+          <ul class="section-list">
+            <li><strong>kyler:</strong> cain. armageddon. on bad terms with trillium</li>
+            <li><strong>devun:</strong> stratus. running with scissors. </li>
+            <li><strong>fitz:</strong> pate. catepillar.</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h2>site map</h2>
+          <table class="layout-table">
+            <tr>
+              <td><a href="zines.html">the zines</a></td>
+              <td>printed goods</td>
+            </tr>
+            <tr>
+              <td><a href="shirts.html">the shirts</a></td>
+              <td>wearable goods</td>
+            </tr>
+            <tr>
+              <td><a href="funnies.html">the funnies</a></td>
+              <td>comics and such</td>
+            </tr>
+            <tr>
+              <td><a href="blogs.html">the blogs</a></td>
+              <td>words and opinions</td>
+            </tr>
+            <tr>
+              <td><a href="rocks.html">the holds</a></td>
+              <td>grippable goods</td>
+            </tr>
+            <tr>
+              <td><a href="buddies.html">the buddies</a></td>
+              <td>good people, bad people</td>
+            </tr>
+          </table>
+        </div>
+      </section>
     </div>
 
+    <!-- TERMINAL -->
+    <div class="terminal">[ UNDER A ROCK :: SYSTEM STATUS ]
+<span class="blink">pending</span></div>
+
+    <!-- 88x31 BUTTONS -->
+    <h3>buttons (collect them all)</h3>
+    <div class="button88-row">
+      <a class="button88" href="index.html"><img src="assets/button-underarock.svg" alt="Under a Rock" /></a>
+      <a class="button88" href="blogs.html"><img src="assets/button-beta.svg" alt="Send Beta" /></a>
+      <a class="button88" href="rocks.html"><img src="assets/button-holds.svg" alt="Garage Holds" /></a>
+      <span class="button88" style="background: #f2f2f2; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-family: monospace; color: #888;">[your button here]</span>
+    </div>
+
+    <!-- WEB RING -->
+    <div class="web-ring">
+      <strong>the crag web ring:</strong>
+      <a href="buddies.html">&lt;&lt; previous climber</a>
+      &nbsp;|&nbsp;
+      <a href="index.html">random crag</a>
+      &nbsp;|&nbsp;
+      <a href="buddies.html">next climber &gt;&gt;</a>
+    </div>
+
+    <!-- FOOTER BADGES -->
     <p class="badge-row">
       <span class="badge">webmaster: devunp</span>
-      <span class="badge">visitor #<span id="visitor-count">1</span></span>
-      <span class="badge">last updated: <span id="last-updated">today</span></span>
-      <span class="badge">what</span>
+      <span class="badge">visitor #<span id="visitor-count">???</span></span>
+      <span class="badge">last updated: <span id="last-updated">recently enough</span></span>
+      <span class="badge"><span class="blink">*</span> best viewed at 1024x768</span>
+      <span class="badge">no cookies. no tracking.</span>
     </p>
+
   </main>
+
+  <!-- AD RAIL RIGHT -->
+  <aside class="ad-rail" aria-label="advertisements">
+    <div class="ad-slot" style="height: 680px;">
+      <span class="ad-slot-label">advertisement</span>
+      <div class="ad-slot-body">
+        <span>120×340</span>
+        <span>[ your image here ]</span>
+      </div>
+    </div>
+    <div class="ad-slot" style="height: 450px;">
+      <span class="ad-slot-label">advertisement</span>
+      <div class="ad-slot-body">
+        <span>120×240</span>
+        <span>[ your image here ]</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- PHOTO RAIL RIGHT -->
+  <aside class="photo-rail photo-rail-right" aria-hidden="true">
+    <div class="photo-rail-track"></div>
+  </aside>
+
+  </div><!-- /.site-layout -->
   <script src="script.js"></script>
+
 </body>
 </html>

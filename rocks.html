@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>the holds | under-a-rock.org</title>
   <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="assets/js/model-viewer.min.js"></script>
 </head>
 <body>
   <main class="page">
@@ -17,6 +18,7 @@
       <li><a href="blogs.html">the blogs</a></li>
       <li><a href="rocks.html">the rocks</a></li>
       <li><a href="buddies.html">the buddies</a></li>
+      <li><a href="gallery.html">the gallery</a></li>
     </ul>
     <ul class="utility-links">
       <li><a href="order.html">order desk</a></li>
@@ -34,21 +36,58 @@
           <th>price</th>
           <th>order</th>
         </tr>
-        <tr>
+        <tr class="product-row" data-product="RH-001">
           <td><span class="product-code">RH-001</span></td>
           <td>elevator crimp</td>
           <td>holy boulders</td>
           <td>tyler durden v5</td>
           <td>$45</td>
-          <td><a class="order-link" href="order.html?item=RH-001">request grip</a></td>
+          <td><a class="order-link" href="order.html?item=RH-001">request grip</a> <span class="inspector-hint">[ 3d ]</span></td>
         </tr>
-        <tr>
+        <tr class="viewer-row" data-for="RH-001">
+          <td colspan="6" class="viewer-cell">
+            <div class="viewer-header">
+              [ HOLD INSPECTOR :: <span class="viewer-code">RH-001</span> ]
+              <a href="#" class="viewer-close">[ &times; ]</a>
+            </div>
+            <model-viewer class="hold-viewer"
+              camera-controls
+              auto-rotate 
+              auto-rotate-delay = "0"
+              rotation-per-second="30deg"
+              camera-orbit="0deg 75deg 65%"
+              shadow-intensity="0"
+              environment-image="neutral"
+              ar-modes="none">
+            </model-viewer>
+            <div class="viewer-fallback" style="display:none">[ no model on file for this hold ]</div>
+          </td>
+        </tr>
+        <tr class="product-row" data-product="RH-002">
           <td><span class="product-code">RH-002</span></td>
           <td>crimper</td>
           <td>holy boulders</td>
           <td>shadow of a man v5</td>
           <td>$45</td>
-          <td><a class="order-link" href="order.html?item=RH-002">request grip</a></td>
+          <td><a class="order-link" href="order.html?item=RH-002">request grip</a> <span class="inspector-hint">[ 3d ]</span></td>
+        </tr>
+        <tr class="viewer-row" data-for="RH-002">
+          <td colspan="6" class="viewer-cell">
+            <div class="viewer-header">
+              [ HOLD INSPECTOR :: <span class="viewer-code">RH-002</span> ]
+              <a href="#" class="viewer-close">[ &times; ]</a>
+            </div>
+            <model-viewer class="hold-viewer"
+              camera-controls
+              auto-rotate
+              auto-rotate-delay="1000"
+              camera-orbit="0deg 75deg 65%"
+              shadow-intensity="0"
+              environment-image="neutral"
+              ar-modes="none">
+            </model-viewer>
+            <div class="viewer-fallback" style="display:none">[ no model on file for this hold ]</div>
+          </td>
         </tr>
       </table>
     </section>
