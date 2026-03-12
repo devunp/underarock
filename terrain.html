@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>holy boulders topo | under-a-rock.org</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    #terrain-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      max-height: 520px;
+      background: #050505;
+      border: 2px solid var(--line);
+      overflow: hidden;
+      position: relative;
+    }
+    #terrain-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    #terrain-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding: 4px 8px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      color: #1f9d55;
+      background: #050505;
+      border-top: 1px solid #1f9d55;
+      border-right: 1px solid #1f9d55;
+      letter-spacing: 0.05em;
+    }
+    #terrain-status {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 4px 8px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      color: #555;
+      background: #050505;
+      border-bottom: 1px solid #222;
+      border-left: 1px solid #222;
+      z-index: 2;
+    }
+    #terrain-label { z-index: 2; }
+    #pin-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .pin-label {
+      position: absolute;
+      transform: translate(8px, -50%);
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      color: #ffb300;
+      background: #050505;
+      border: 1px solid #ffb300;
+      padding: 2px 5px;
+      white-space: nowrap;
+      line-height: 1.4;
+      letter-spacing: 0.03em;
+    }
+    .pin-label .pin-id {
+      color: #fff;
+      margin-right: 4px;
+    }
+    .topo-meta {
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      color: var(--ink);
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .topo-meta span {
+      border: 1px solid var(--line);
+      padding: 2px 6px;
+    }
+    .heightmap-note {
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      color: #555;
+      border: 1px dashed var(--line);
+      padding: 8px;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>holy boulders</h1>
+    <ul class="nav-links">
+      <li><a href="index.html">home</a></li>
+      <li><a href="zines.html">the zines</a></li>
+      <li><a href="shirts.html">the shirts</a></li>
+      <li><a href="funnies.html">the funnies</a></li>
+      <li><a href="blogs.html">the blogs</a></li>
+      <li><a href="rocks.html">the holds</a></li>
+      <li><a href="buddies.html">the buddies</a></li>
+      <li><a href="gallery.html">the gallery</a></li>
+      <li><a href="order.html">order desk</a></li>
+      <li><a href="about.html">about</a></li>
+      <li><a href="contact.html">contact</a></li>
+    </ul>
+
+    <img class="rule" src="assets/divider-zigzag.svg" alt="" />
+
+    <div class="grid-2">
+      <section class="panel" style="grid-column: 1 / -1;">
+        <h2>topographic render</h2>
+        <div id="terrain-wrap">
+          <canvas id="terrain-canvas"></canvas>
+          <div id="pin-overlay"></div>
+          <div id="terrain-label">holy boulders / pomona, il / shawnee national forest</div>
+          <div id="terrain-status">[ procedural ]</div>
+        </div>
+        <div class="topo-meta">
+          <span>lat: 37.4418° n</span>
+          <span>lon: 89.3701° w</span>
+          <span>elev: ~400ft</span>
+          <span>sandstone conglomerate</span>
+          <span>shawnee national forest</span>
+        </div>
+        <div class="heightmap-note">
+          // currently displaying procedural terrain.<br>
+          // drop <strong>assets/holy-boulders-heightmap.png</strong> (grayscale, any size) to load real elevation data.<br>
+          // see instructions below for how to generate one from USGS data.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>the spot</h2>
+        <p>holy boulders sits in the garden of the gods wilderness, shawnee national forest, southern illinois. conglomerate sandstone boulders scattered across a hardwood ridgeline. short walk from the trailhead, long walk back after you've eaten it.</p>
+        <p>the area has dozens of problems spread across multiple landings. mostly moderate but the landings are a mixed bag. bring a big pad.</p>
+        <table>
+          <tr><th>rock type</th><td>sandstone conglomerate</td></tr>
+          <tr><th>approach</th><td>~10 min from lot</td></tr>
+          <tr><th>season</th><td>fall / spring</td></tr>
+          <tr><th>nearest town</th><td>pomona, il</td></tr>
+          <tr><th>land</th><td>shawnee national forest</td></tr>
+        </table>
+      </section>
+
+    </div>
+
+    <img class="rule" src="assets/divider-zigzag.svg" alt="" />
+
+    <footer class="site-footer">
+      <p>webmaster: devunp &nbsp;|&nbsp; under-a-rock.org &nbsp;|&nbsp; visitor no. <span id="visitor-count">—</span></p>
+    </footer>
+  </main>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+
+    // ── CONFIG ────────────────────────────────────────────────────────────────
+    const HEIGHTMAP_SRC = 'assets/holy-boulders-heightmap.png';
+    const SEGMENTS      = 140;        // mesh resolution
+    const PLANE_SIZE    = 10;         // world units
+    const HEIGHT_SCALE  = 1;          // vertical exaggeration
+    const ROTATION_SPD  = 0.009;    // radians per frame
+    const WIRE_COLOR    = 0x1f9d55;   // --acid green
+    const BG_COLOR      = 0x050505;   // --ink
+    const TILT_X        = 0;      // camera angle down (radians)
+    const TILT_Y        = -45;      // camera angle down (radians)
+
+
+    // ── BOUNDS ────────────────────────────────────────────────────────────────
+    // Fill these in from: gdalinfo yourfile.tif → "Corner Coordinates" section
+    // Upper Left  = (lon_min, lat_max)
+    // Lower Right = (lon_max, lat_min)
+    // Leave as null if unknown — pins will fall back to u/v mode.
+    const BOUNDS = {
+      lon_min: -89.4270,  // Upper Left  X  ( 89d25'37.31"W )
+      lon_max: -89.3752,  // Lower Right X  ( 89d22'30.77"W )
+      lat_min:  37.5998,  // Lower Right Y  ( 37d35'59.37"N )
+      lat_max:  37.6273,  // Upper Left  Y  ( 37d37'34.68"N )
+    };
+
+    function latlonToUV(lat, lon) {
+      if (!BOUNDS.lon_min) return null;
+      const u = (lon - BOUNDS.lon_min) / (BOUNDS.lon_max - BOUNDS.lon_min);
+      const v = (BOUNDS.lat_max - lat) / (BOUNDS.lat_max - BOUNDS.lat_min);
+      if (u < 0 || u > 1 || v < 0 || v > 1) {
+        console.warn(`pin at (${lat}, ${lon}) is outside the downloaded area. re-download a wider tif.`);
+      }
+      return { u: Math.max(0, Math.min(1, u)), v: Math.max(0, Math.min(1, v)) };
+    }
+
+    // ── PINS ──────────────────────────────────────────────────────────────────
+    // Use lat/lon when BOUNDS is filled in (accurate).
+    // Fall back to u/v [0–1] if BOUNDS is still null (eyeballed).
+    const PINS = [
+      { id: '01', label: 'the mollusk',  lat: 37.61563, lon: -89.41242 },
+      { id: '01', label: 'best in show',  lat: 37.6104, lon: -89.40825 },
+      { id: '01', label: 'enlightenment',  lat: 37.61699, lon: -89.41109 },
+      { id: '01', label: 'cain and ankle',  lat: 37.61327, lon: -89.41019 },
+      { id: '01', label: 'open gates',  lat: 37.61992, lon: -89.41143 },
+
+    ];
+
+    // ── SCENE ─────────────────────────────────────────────────────────────────
+    const canvas   = document.getElementById('terrain-canvas');
+    const wrap     = document.getElementById('terrain-wrap');
+    const statusEl = document.getElementById('terrain-status');
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(BG_COLOR, 1);
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 2, 0.1, 100);
+    camera.position.set(0, 6, 10);
+    camera.lookAt(0, 0, 0);
+
+    // ── GEOMETRY ──────────────────────────────────────────────────────────────
+    const geo = new THREE.PlaneGeometry(PLANE_SIZE, PLANE_SIZE, SEGMENTS, SEGMENTS);
+    geo.rotateX(-Math.PI / 2);  // lay flat
+
+    // Procedural terrain — sum of sines, feels like rounded sandstone ridges
+    function applyProcedural(geometry) {
+      const pos = geometry.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        const y =
+          Math.sin(x * 0.7 + 0.3)  * 0.55 +
+          Math.cos(z * 0.55 + 0.8) * 0.45 +
+          Math.sin(x * 1.8 + z * 1.4 + 1.0) * 0.25 +
+          Math.cos(x * 3.1 - z * 2.6 + 0.5) * 0.12 +
+          Math.sin(x * 5.2 + z * 4.1 - 1.2) * 0.055 +
+          // ridge bias — higher in the center-back
+          Math.exp(-((x * x) + (z + 1.5) * (z + 1.5)) * 0.12) * 0.9;
+        pos.setY(i, y);
+      }
+      pos.needsUpdate = true;
+      geometry.computeVertexNormals();
+    }
+
+    // Heightmap from PNG — brightness → elevation
+    function applyHeightmap(geometry, imgData, imgW, imgH) {
+      const pos  = geometry.attributes.position;
+      const cols = SEGMENTS + 1;
+      const rows = SEGMENTS + 1;
+      for (let i = 0; i < pos.count; i++) {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const px  = Math.floor((col / (cols - 1)) * (imgW - 1));
+        const py  = Math.floor((row / (rows - 1)) * (imgH - 1));
+        const idx = (py * imgW + px) * 4;
+        const brightness = imgData[idx] / 255;   // red channel
+        pos.setY(i, brightness * HEIGHT_SCALE - HEIGHT_SCALE * 0.15);
+      }
+      pos.needsUpdate = true;
+      geometry.computeVertexNormals();
+    }
+
+    applyProcedural(geo);
+
+    const mat  = new THREE.MeshBasicMaterial({ color: WIRE_COLOR, wireframe: true });
+    const mesh = new THREE.Mesh(geo, mat);
+    scene.add(mesh);
+
+    // ── PIN SYSTEM ────────────────────────────────────────────────────────────
+    const PIN_HEIGHT = 0.5;
+    const PIN_COLOR  = 0xffb300;  // --highlight yellow
+    let pinGroup     = null;
+    let pinLabelData = [];
+
+    // Sample the terrain height at normalized UV coordinates.
+    function sampleHeight(u, v) {
+      const cols = SEGMENTS + 1;
+      const rows = SEGMENTS + 1;
+      const col  = Math.round(u * (cols - 1));
+      const row  = Math.round(v * (rows - 1));
+      return geo.attributes.position.getY(row * cols + col);
+    }
+
+    function buildPins() {
+      if (pinGroup) { mesh.remove(pinGroup); }
+      pinGroup     = new THREE.Group();
+      pinLabelData = [];
+      const overlay = document.getElementById('pin-overlay');
+      overlay.innerHTML = '';
+
+      const lineMat = new THREE.LineBasicMaterial({ color: PIN_COLOR });
+      const boxMat  = new THREE.MeshBasicMaterial({ color: PIN_COLOR, wireframe: true });
+
+      PINS.forEach(pin => {
+        const uv = (pin.lat != null) ? latlonToUV(pin.lat, pin.lon) : { u: pin.u, v: pin.v };
+        if (!uv) return;
+        const { u, v } = uv;
+        const x = (u - 0.5) * PLANE_SIZE;
+        const z = (v - 0.5) * PLANE_SIZE;
+        const y = sampleHeight(u, v);
+
+        // Vertical spike
+        const pts    = [new THREE.Vector3(x, y, z), new THREE.Vector3(x, y + PIN_HEIGHT, z)];
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+        pinGroup.add(new THREE.Line(lineGeo, lineMat));
+
+        // Small wireframe box at tip
+        const tipGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+        const tip    = new THREE.Mesh(tipGeo, boxMat);
+        tip.position.set(x, y + PIN_HEIGHT + 0.05, z);
+        pinGroup.add(tip);
+
+        // HTML label — positioned in animate() via 3D→2D projection
+        const el = document.createElement('div');
+        el.className = 'pin-label';
+        el.innerHTML = `<span class="pin-id">${pin.id}</span>${pin.label}`;
+        overlay.appendChild(el);
+
+        pinLabelData.push({ el, tipVec: new THREE.Vector3(x, y + PIN_HEIGHT + 0.12, z), u, v });
+      });
+
+      mesh.add(pinGroup);
+    }
+
+    // Reproject pin labels to screen each frame
+    function updatePinLabels() {
+      pinLabelData.forEach(({ el, tipVec }) => {
+        const world = tipVec.clone();
+        mesh.localToWorld(world);
+        const ndc = world.clone().project(camera);
+        if (ndc.z > 1) {
+          el.style.display = 'none';
+        } else {
+          el.style.display = 'block';
+          el.style.left = ((ndc.x + 1) / 2 * wrap.clientWidth)  + 'px';
+          el.style.top  = ((-ndc.y + 1) / 2 * wrap.clientHeight) + 'px';
+        }
+      });
+    }
+
+    buildPins();
+
+    // ── TRY LOADING REAL HEIGHTMAP ────────────────────────────────────────────
+    (function tryHeightmap() {
+      const img = new Image();
+      img.onload = () => {
+        const c   = document.createElement('canvas');
+        c.width   = img.naturalWidth;
+        c.height  = img.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, c.width, c.height).data;
+        applyHeightmap(geo, data, c.width, c.height);
+        buildPins();  // rebuild so pins sit on real terrain height
+        statusEl.textContent = '[ real dem ]';
+        statusEl.style.color = '#1f9d55';
+      };
+      img.onerror = () => { /* no file yet — keep procedural */ };
+      img.src = HEIGHTMAP_SRC + '?v=' + Date.now();
+    })();
+
+    // ── RESIZE ────────────────────────────────────────────────────────────────
+    function resize() {
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // ── ANIMATE ───────────────────────────────────────────────────────────────
+    // Mechanical, linear rotation — no easing, no spring. like the logo.
+    function animate() {
+      requestAnimationFrame(animate);
+      mesh.rotation.y += ROTATION_SPD;
+      if (pinLabelData.length) updatePinLabels();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // ── VISITOR COUNT (shared with main script) ───────────────────────────────
+    const countEl = document.getElementById('visitor-count');
+    if (countEl) {
+      countEl.textContent = localStorage.getItem('underarock-visitor-count') || '—';
+    }
+  </script>
+</body>
+</html>
