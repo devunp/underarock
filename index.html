@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <script>
+    if (!sessionStorage.getItem('splash-seen')) {
+      window.location.replace('splash.html');
+    }
+  </script>
   <div class="site-layout">
 
   <!-- PHOTO RAIL LEFT -->

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>under-a-rock.org</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #050505;
+      font-family: "Courier New", monospace;
+    }
+
+    #terrain-canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #pin-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .pin-label {
+      position: absolute;
+      transform: translate(8px, -50%);
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      color: #ffb300;
+      background: #050505;
+      border: 1px solid #ffb300;
+      padding: 2px 5px;
+      white-space: nowrap;
+      line-height: 1.4;
+      letter-spacing: 0.03em;
+    }
+    .pin-label .pin-id {
+      color: #fff;
+      margin-right: 4px;
+    }
+
+    #terrain-label {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      padding: 4px 8px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      color: #1f9d55;
+      background: #050505;
+      border-top: 1px solid #1f9d55;
+      border-right: 1px solid #1f9d55;
+      letter-spacing: 0.05em;
+      z-index: 3;
+    }
+
+    #terrain-status {
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding: 4px 8px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      color: #555;
+      background: #050505;
+      border-bottom: 1px solid #222;
+      border-left: 1px solid #222;
+      z-index: 3;
+    }
+
+    #controls-hint {
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 4px 8px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      color: #333;
+      background: #050505;
+      border-bottom: 1px solid #1a1a1a;
+      border-right: 1px solid #1a1a1a;
+      letter-spacing: 0.04em;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    #enter-prompt {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      z-index: 4;
+      padding: 8px 12px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: #1f9d55;
+      background: #050505;
+      border-top: 1px solid #1f9d55;
+      border-left: 1px solid #1f9d55;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      animation: blink 1s steps(1, end) infinite;
+    }
+    #enter-prompt:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="terrain-canvas"></canvas>
+  <div id="pin-overlay"></div>
+  <div id="controls-hint">drag · scroll · right-drag pan</div>
+  <div id="terrain-label">holy boulders / pomona, il / shawnee national forest</div>
+  <div id="terrain-status">[ procedural ]</div>
+  <a id="enter-prompt" href="index.html">[ enter ]</a>
+
+  <script>
+    sessionStorage.setItem('splash-seen', '1');
+  </script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const HEIGHTMAP_SRC = 'assets/holy-boulders-heightmap.png';
+    const SEGMENTS      = 140;
+    const PLANE_SIZE    = 10;
+    const HEIGHT_SCALE  = 1;
+    const PROC_SCALE    = 0.4;        // vertical exaggeration for procedural terrain (lower = flatter)
+    const WIRE_COLOR    = 0x1f9d55;
+    const BG_COLOR      = 0x050505;
+    const TRAIL_MANIFEST = 'assets/gpx/manifest.json';  // add new trails here
+    const TRAIL_COLOR    = 0xff2200;
+    const TRAIL_LIFT     = 0.05;  // float above terrain surface
+
+    const BOUNDS = {
+      lon_min: -89.4270,
+      lon_max: -89.3752,
+      lat_min:  37.5998,
+      lat_max:  37.6273,
+    };
+
+    function latlonToUV(lat, lon) {
+      if (!BOUNDS.lon_min) return null;
+      const u = (lon - BOUNDS.lon_min) / (BOUNDS.lon_max - BOUNDS.lon_min);
+      const v = (BOUNDS.lat_max - lat) / (BOUNDS.lat_max - BOUNDS.lat_min);
+      if (u < 0 || u > 1 || v < 0 || v > 1) {
+        console.warn(`pin at (${lat}, ${lon}) is outside bounds`);
+      }
+      return { u: Math.max(0, Math.min(1, u)), v: Math.max(0, Math.min(1, v)) };
+    }
+
+    const PINS = [
+      { id: '01', label: 'the mollusk',    lat: 37.61563, lon: -89.41242 },
+      { id: '02', label: 'best in show',   lat: 37.6104,  lon: -89.40825 },
+      { id: '03', label: 'enlightenment',  lat: 37.61699, lon: -89.41109 },
+      { id: '04', label: 'cain and ankle', lat: 37.61327, lon: -89.41019 },
+      { id: '05', label: 'open gates',     lat: 37.61992, lon: -89.41143 },
+      { id: '06', label: 'bioterrorism',     lat: 37.61886, lon: -89.41456},
+      { id: '07', label: 'hot rats direct',     lat: 37.61516, lon: -89.40749 },
+      { id: '08', label: 'brown cow',     lat: 37.61524, lon: -89.41119 },
+      { id: '09', label: 'hellboy',     lat: 37.62792, lon: -89.40566 },
+      { id: '10', label: 'goldeneye',     lat: 37.6178, lon: -89.40485 }
+    ];
+
+    const canvas   = document.getElementById('terrain-canvas');
+    const statusEl = document.getElementById('terrain-status');
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(BG_COLOR, 1);
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 6, 10);
+    camera.lookAt(0, 0, 0);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping    = false;   // mechanical, no smoothing
+    controls.autoRotate       = true;
+    controls.autoRotateSpeed  = 1.2;
+    controls.minDistance      = 3;
+    controls.maxDistance      = 25;
+    controls.maxPolarAngle    = Math.PI * 0.72;  // don't let camera go underground
+    // stop autorotate the first time the user touches the scene
+    renderer.domElement.addEventListener('pointerdown', () => {
+      controls.autoRotate = false;
+    }, { once: true });
+
+    const geo = new THREE.PlaneGeometry(PLANE_SIZE, PLANE_SIZE, SEGMENTS, SEGMENTS);
+    geo.rotateX(-Math.PI / 2);
+
+    function applyProcedural(geometry) {
+      const pos = geometry.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        const y =
+          Math.sin(x * 0.7 + 0.3)  * 0.55 +
+          Math.cos(z * 0.55 + 0.8) * 0.45 +
+          Math.sin(x * 1.8 + z * 1.4 + 1.0) * 0.25 +
+          Math.cos(x * 3.1 - z * 2.6 + 0.5) * 0.12 +
+          Math.sin(x * 5.2 + z * 4.1 - 1.2) * 0.055 +
+          Math.exp(-((x * x) + (z + 1.5) * (z + 1.5)) * 0.12) * 0.9;
+        pos.setY(i, y * PROC_SCALE);
+      }
+      pos.needsUpdate = true;
+      geometry.computeVertexNormals();
+    }
+
+    function applyHeightmap(geometry, imgData, imgW, imgH) {
+      const pos  = geometry.attributes.position;
+      const cols = SEGMENTS + 1;
+      const rows = SEGMENTS + 1;
+      for (let i = 0; i < pos.count; i++) {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const px  = Math.floor((col / (cols - 1)) * (imgW - 1));
+        const py  = Math.floor((row / (rows - 1)) * (imgH - 1));
+        const idx = (py * imgW + px) * 4;
+        const brightness = imgData[idx] / 255;
+        pos.setY(i, brightness * HEIGHT_SCALE - HEIGHT_SCALE * 0.15);
+      }
+      pos.needsUpdate = true;
+      geometry.computeVertexNormals();
+    }
+
+    applyProcedural(geo);
+
+    const mat  = new THREE.MeshBasicMaterial({ color: WIRE_COLOR, wireframe: true });
+    const mesh = new THREE.Mesh(geo, mat);
+    scene.add(mesh);
+
+    const PIN_HEIGHT = 0.5;
+    const PIN_COLOR  = 0xffb300;
+    let pinGroup     = null;
+    let pinLabelData = [];
+    let trailGroup   = null;
+
+    function sampleHeight(u, v) {
+      const cols = SEGMENTS + 1;
+      const rows = SEGMENTS + 1;
+      const col  = Math.round(u * (cols - 1));
+      const row  = Math.round(v * (rows - 1));
+      return geo.attributes.position.getY(row * cols + col);
+    }
+
+    function buildPins() {
+      if (pinGroup) { mesh.remove(pinGroup); }
+      pinGroup     = new THREE.Group();
+      pinLabelData = [];
+      const overlay = document.getElementById('pin-overlay');
+      overlay.innerHTML = '';
+
+      const lineMat = new THREE.LineBasicMaterial({ color: PIN_COLOR });
+      const boxMat  = new THREE.MeshBasicMaterial({ color: PIN_COLOR, wireframe: true });
+
+      PINS.forEach(pin => {
+        const uv = (pin.lat != null) ? latlonToUV(pin.lat, pin.lon) : { u: pin.u, v: pin.v };
+        if (!uv) return;
+        const { u, v } = uv;
+        const x = (u - 0.5) * PLANE_SIZE;
+        const z = (v - 0.5) * PLANE_SIZE;
+        const y = sampleHeight(u, v);
+
+        const pts    = [new THREE.Vector3(x, y, z), new THREE.Vector3(x, y + PIN_HEIGHT, z)];
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+        pinGroup.add(new THREE.Line(lineGeo, lineMat));
+
+        const tipGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+        const tip    = new THREE.Mesh(tipGeo, boxMat);
+        tip.position.set(x, y + PIN_HEIGHT + 0.05, z);
+        pinGroup.add(tip);
+
+        const el = document.createElement('div');
+        el.className = 'pin-label';
+        el.innerHTML = `<span class="pin-id">${pin.id}</span>${pin.label}`;
+        overlay.appendChild(el);
+
+        pinLabelData.push({ el, tipVec: new THREE.Vector3(x, y + PIN_HEIGHT + 0.12, z), u, v });
+      });
+
+      mesh.add(pinGroup);
+    }
+
+    function updatePinLabels() {
+      pinLabelData.forEach(({ el, tipVec }) => {
+        const world = tipVec.clone();
+        mesh.localToWorld(world);
+        const ndc = world.clone().project(camera);
+        if (ndc.z > 1) {
+          el.style.display = 'none';
+        } else {
+          el.style.display = 'block';
+          el.style.left = ((ndc.x + 1) / 2 * window.innerWidth)  + 'px';
+          el.style.top  = ((-ndc.y + 1) / 2 * window.innerHeight) + 'px';
+        }
+      });
+    }
+
+    async function buildTrails() {
+      let manifest;
+      try {
+        manifest = await fetch(TRAIL_MANIFEST).then(r => r.json());
+      } catch (e) { return; }
+      if (trailGroup) scene.remove(trailGroup);
+      trailGroup = new THREE.Group();
+      const trailMat = new THREE.LineBasicMaterial({ color: TRAIL_COLOR });
+      await Promise.all(manifest.map(async ({ file }) => {
+        let xml;
+        try {
+          const res = await fetch('assets/gpx/' + file);
+          xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+        } catch (e) { return; }
+        xml.querySelectorAll('trkseg').forEach(seg => {
+          const pts = [];
+          seg.querySelectorAll('trkpt').forEach(pt => {
+            const lat = parseFloat(pt.getAttribute('lat'));
+            const lon = parseFloat(pt.getAttribute('lon'));
+            const uv  = latlonToUV(lat, lon);
+            if (!uv) return;
+            pts.push(new THREE.Vector3(
+              (uv.u - 0.5) * PLANE_SIZE,
+              sampleHeight(uv.u, uv.v) + TRAIL_LIFT,
+              (uv.v - 0.5) * PLANE_SIZE
+            ));
+          });
+          if (pts.length < 2) return;
+          trailGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), trailMat));
+        });
+      }));
+      scene.add(trailGroup);
+    }
+
+    buildPins();
+    buildTrails();
+
+    (function tryHeightmap() {
+      const img = new Image();
+      img.onload = () => {
+        const c   = document.createElement('canvas');
+        c.width   = img.naturalWidth;
+        c.height  = img.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, c.width, c.height).data;
+        applyHeightmap(geo, data, c.width, c.height);
+        buildPins();
+        buildTrails();
+        statusEl.textContent = '[ real dem ]';
+        statusEl.style.color = '#1f9d55';
+      };
+      img.onerror = () => {};
+      img.src = HEIGHTMAP_SRC + '?v=' + Date.now();
+    })();
+
+    function resize() {
+      renderer.setSize(window.innerWidth, window.innerHeight, false);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      if (pinLabelData.length) updatePinLabels();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

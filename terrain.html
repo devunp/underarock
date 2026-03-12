@@ -164,7 +164,8 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
       }
     }
   </script>
@@ -176,10 +177,14 @@
     const HEIGHTMAP_SRC = 'assets/holy-boulders-heightmap.png';
     const SEGMENTS      = 140;        // mesh resolution
     const PLANE_SIZE    = 10;         // world units
-    const HEIGHT_SCALE  = 1;          // vertical exaggeration
+    const HEIGHT_SCALE  = .1;          // vertical exaggeration
+    const PROC_SCALE    = 10;        // vertical exaggeration for procedural terrain (lower = flatter)
     const ROTATION_SPD  = 0.009;    // radians per frame
     const WIRE_COLOR    = 0x1f9d55;   // --acid green
     const BG_COLOR      = 0x050505;   // --ink
+    const TRAIL_MANIFEST = 'assets/gpx/manifest.json';  // add new trails here
+    const TRAIL_COLOR    = 0xff2200;
+    const TRAIL_LIFT     = 0.05;  // float above terrain surface
     const TILT_X        = 0;      // camera angle down (radians)
     const TILT_Y        = -45;      // camera angle down (radians)
 
@@ -215,7 +220,6 @@
       { id: '01', label: 'enlightenment',  lat: 37.61699, lon: -89.41109 },
       { id: '01', label: 'cain and ankle',  lat: 37.61327, lon: -89.41019 },
       { id: '01', label: 'open gates',  lat: 37.61992, lon: -89.41143 },
-
     ];
 
     // ── SCENE ─────────────────────────────────────────────────────────────────
@@ -250,7 +254,7 @@
           Math.sin(x * 5.2 + z * 4.1 - 1.2) * 0.055 +
           // ridge bias — higher in the center-back
           Math.exp(-((x * x) + (z + 1.5) * (z + 1.5)) * 0.12) * 0.9;
-        pos.setY(i, y);
+        pos.setY(i, y * PROC_SCALE);
       }
       pos.needsUpdate = true;
       geometry.computeVertexNormals();
@@ -285,6 +289,7 @@
     const PIN_COLOR  = 0xffb300;  // --highlight yellow
     let pinGroup     = null;
     let pinLabelData = [];
+    let trailGroup   = null;
 
     // Sample the terrain height at normalized UV coordinates.
     function sampleHeight(u, v) {
@@ -352,7 +357,42 @@
       });
     }
 
+    async function buildTrails() {
+      let manifest;
+      try {
+        manifest = await fetch(TRAIL_MANIFEST).then(r => r.json());
+      } catch (e) { return; }
+      if (trailGroup) scene.remove(trailGroup);
+      trailGroup = new THREE.Group();
+      const trailMat = new THREE.LineBasicMaterial({ color: TRAIL_COLOR });
+      await Promise.all(manifest.map(async ({ file }) => {
+        let xml;
+        try {
+          const res = await fetch('assets/gpx/' + file);
+          xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+        } catch (e) { return; }
+        xml.querySelectorAll('trkseg').forEach(seg => {
+          const pts = [];
+          seg.querySelectorAll('trkpt').forEach(pt => {
+            const lat = parseFloat(pt.getAttribute('lat'));
+            const lon = parseFloat(pt.getAttribute('lon'));
+            const uv  = latlonToUV(lat, lon);
+            if (!uv) return;
+            pts.push(new THREE.Vector3(
+              (uv.u - 0.5) * PLANE_SIZE,
+              sampleHeight(uv.u, uv.v) + TRAIL_LIFT,
+              (uv.v - 0.5) * PLANE_SIZE
+            ));
+          });
+          if (pts.length < 2) return;
+          trailGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), trailMat));
+        });
+      }));
+      scene.add(trailGroup);
+    }
+
     buildPins();
+    buildTrails();
 
     // ── TRY LOADING REAL HEIGHTMAP ────────────────────────────────────────────
     (function tryHeightmap() {
@@ -366,6 +406,7 @@
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
         applyHeightmap(geo, data, c.width, c.height);
         buildPins();  // rebuild so pins sit on real terrain height
+        buildTrails();
         statusEl.textContent = '[ real dem ]';
         statusEl.style.color = '#1f9d55';
       };
